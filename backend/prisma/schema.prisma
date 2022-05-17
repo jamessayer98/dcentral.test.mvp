@@ -12,16 +12,27 @@ datasource db {
 
 model User {
   id Int @id @default(autoincrement())
-
   email         String @unique
   username String @unique
   password_hash String
-
   firstName String?
   lastName  String?
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isVerified Boolean @default(false)
+  blocked Boolean @default(false)
+
+  tokenVersion TokenVersion?
 
   @@map("users")
+}
+
+
+model TokenVersion {
+  id Int @id @default(autoincrement())
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  version Int
+
+  @@map("token_versions")
 }
