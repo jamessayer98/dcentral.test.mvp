@@ -12,3 +12,9 @@ export class SignupDto {
 }
 
 export class SigninDto extends SignupDto {}
+
+export class RefreshTokenDto {
+  @IsString()
+  @IsNotEmpty()
+  refreshToken: string;
+}

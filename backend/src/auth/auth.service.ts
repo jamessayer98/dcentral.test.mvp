@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
@@ -36,7 +36,7 @@ export class AuthService {
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new ForbiddenException('Email already exists');
+          throw new BadRequestException('Email already exists');
         }
         throw error;
       }
@@ -50,10 +50,10 @@ export class AuthService {
       },
     });
 
-    if (!user) throw new ForbiddenException('Invalid credentials');
+    if (!user) throw new BadRequestException('Invalid credentials');
 
     const pwValid = await argon.verify(user.password_hash, dto.password);
-    if (!pwValid) throw new ForbiddenException('Invalid credentials');
+    if (!pwValid) throw new BadRequestException('Invalid credentials');
 
     delete user.password_hash;
 
@@ -63,6 +63,31 @@ export class AuthService {
     return {
       user,
       tokens: { access: accessToken, refresh: refreshToken },
+    };
+  }
+
+  async refresh(dto: { refreshToken: string }) {
+    const refreshTokenSecret = this.configService.get('REFRESH_TOKEN_SECRET');
+
+    const payload = await this.jwtService.verifyAsync(dto.refreshToken, {
+      ignoreExpiration: false,
+      secret: refreshTokenSecret,
+    });
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: payload.sub,
+      },
+    });
+
+    if (!user) throw new BadRequestException('Invalid credentials');
+
+    const accessToken = await this.assignAccessToken(user.id);
+    const refreshToken = await this.assignRefreshToken(user.id);
+
+    return {
+      access: accessToken,
+      refresh: refreshToken,
     };
   }
 

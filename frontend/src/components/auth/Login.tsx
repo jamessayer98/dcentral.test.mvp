@@ -10,11 +10,13 @@ import {
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 import ThemeToggeler from "../theme/ThemeToggler";
 
 export const Login = () => {
   const navigate = useNavigate();
   const toast = useToast();
+  const { login } = useAuth();
 
   const {
     handleSubmit,
@@ -28,9 +30,14 @@ export const Login = () => {
   });
 
   const onSubmit = async (values: { email: string; password: string }) => {
-    console.log(values);
     try {
-      //   await login(values.email, values.password);
+      await login(values.email, values.password);
+      toast({
+        title: `Logged in as ${values.email}`,
+        status: "success",
+        isClosable: true,
+        duration: 1500,
+      });
     } catch (error) {
       toast({
         title: `Invalid email or password`,
@@ -88,7 +95,7 @@ export const Login = () => {
             isLoading={isSubmitting}
             loadingText="Logging in..."
             width="100%"
-            colorScheme="orange"
+            colorScheme="purple"
             variant="outline"
             mt={6}
             mb={6}

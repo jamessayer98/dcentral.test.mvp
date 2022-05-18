@@ -20,7 +20,7 @@ const ThemeToggeler = ({ showLabel = false, ...rest }: ThemeTogglerProps) => {
         isChecked={colorMode === "dark"}
         isDisabled={false}
         value={colorMode}
-        colorScheme="orange"
+        colorScheme="purple"
         variant="ghost"
         mr={2}
         onChange={toggleColorMode}
