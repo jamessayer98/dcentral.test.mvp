@@ -86,7 +86,7 @@ export const Register = () => {
             isLoading={isSubmitting}
             loadingText="Creating account..."
             width="100%"
-            colorScheme="orange"
+            colorScheme="purple"
             variant="outline"
             mt={6}
             mb={6}
