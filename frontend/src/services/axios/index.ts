@@ -7,6 +7,10 @@ const axiosInstance = axios.create({
   baseURL: apibaseURL,
 });
 
+export const axiosOpenInstance = axios.create({
+  baseURL: apibaseURL,
+});
+
 axiosInstance.interceptors.request.use(requestInterceptor);
 axiosInstance.interceptors.response.use(
   (response) => response,

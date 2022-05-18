@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { axiosOpenInstance } from "../../services/axios";
 import ThemeToggeler from "../theme/ThemeToggler";
 
 export const Register = () => {
@@ -28,7 +29,25 @@ export const Register = () => {
   });
 
   function onSubmit(values: { email: string; password: string }) {
-    console.log(values);
+    axiosOpenInstance
+      .post("/v1/auth/signup", values)
+      .then(() => {
+        toast({
+          title: "Account created successfully.",
+          status: "success",
+          isClosable: true,
+          duration: 1500,
+        });
+        navigate("/login", { replace: true });
+      })
+      .catch((error) => {
+        toast({
+          title: `${error.response.data.message || "Something went wrong"}`,
+          status: "error",
+          isClosable: true,
+          duration: 1500,
+        });
+      });
   }
 
   return (
