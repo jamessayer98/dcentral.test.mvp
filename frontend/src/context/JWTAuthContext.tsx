@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useReducer, useRef } from "react";
 import axiosInstance from "../services/axios";
+import { TokenPayload } from "../types/auth.types";
 import { User } from "../types/user.types";
 import { getSession, resetSession, setSession } from "../utils/sessions";
 
@@ -12,6 +13,7 @@ interface AuthState {
 interface AuthContextValue extends AuthState {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  googleLogin: (user: User, tokens: TokenPayload) => void;
 }
 
 interface AuthProviderProps {
@@ -82,6 +84,7 @@ export const AuthContext = createContext<AuthContextValue>({
   ...initialAuthState,
   login: () => Promise.resolve(),
   logout: () => Promise.resolve(),
+  googleLogin: () => Promise.resolve(),
 });
 
 export const AuthProvider = (props: AuthProviderProps) => {
@@ -137,7 +140,7 @@ export const AuthProvider = (props: AuthProviderProps) => {
     try {
       const response = await axiosInstance.post<{
         user: User;
-        tokens: { access: string; refresh: string };
+        tokens: TokenPayload;
       }>("/v1/auth/signin", {
         email,
         password,
@@ -157,6 +160,16 @@ export const AuthProvider = (props: AuthProviderProps) => {
     }
   };
 
+  const googleLogin = (user: User, tokens: TokenPayload) => {
+    setSession(tokens.access, tokens.refresh);
+    dispatch({
+      type: "LOGIN",
+      payload: {
+        user,
+      },
+    });
+  };
+
   const logout = () => {
     resetSession();
     dispatch({ type: "LOGOUT" });
@@ -168,6 +181,7 @@ export const AuthProvider = (props: AuthProviderProps) => {
         ...state,
         login,
         logout,
+        googleLogin,
       }}
     >
       {children}
