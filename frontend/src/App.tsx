@@ -9,6 +9,8 @@ import { Authenticated } from "./components/auth/Authenticated";
 import { Login } from "./components/auth/Login";
 import { PublicRoute } from "./components/auth/PublicRoute";
 import { Register } from "./components/auth/Register";
+import { Home } from "./components/Home/Home";
+import { NFTDetails } from "./components/Home/NFTDetails";
 import { Navbar } from "./components/Navbar/Navbar";
 import { AuthConsumer, AuthProvider } from "./context/JWTAuthContext";
 
@@ -52,7 +54,15 @@ export const App = () => (
                     index
                     element={
                       <Authenticated>
-                        <h1>Hello Protected</h1>
+                        <Home />
+                      </Authenticated>
+                    }
+                  />
+                  <Route
+                    path="/n/:id"
+                    element={
+                      <Authenticated>
+                        <NFTDetails />
                       </Authenticated>
                     }
                   />

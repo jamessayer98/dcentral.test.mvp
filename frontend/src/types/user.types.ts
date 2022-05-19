@@ -8,4 +8,5 @@ export interface User {
   updatedAt: Date;
   isVerified: boolean;
   blocked: boolean;
+  provider: string;
 }
