@@ -14,13 +14,14 @@ model User {
   id Int @id @default(autoincrement())
   email         String @unique
   username String @unique
-  password_hash String
+  password_hash String?
   firstName String?
   lastName  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   isVerified Boolean @default(false)
   blocked Boolean @default(false)
+  provider String @default("email")
 
   tokenVersion TokenVersion?
 

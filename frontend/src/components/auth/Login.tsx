@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import ThemeToggeler from "../theme/ThemeToggler";
+import GoogleButton from "./GoogleLoginButton";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -103,6 +104,7 @@ export const Login = () => {
           >
             Login
           </Button>
+          <GoogleButton />
         </form>
         <ThemeToggeler showLabel={true} />
         <Button

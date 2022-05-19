@@ -3,16 +3,23 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import * as argon from 'argon2';
+import { Auth, google } from 'googleapis';
 import { PrismaService } from '../prisma/prisma.service';
 import { SigninDto, SignupDto } from './dto';
+import { GoogleTokenVerificationDto } from './dto/google-auth.dto';
 
 @Injectable()
 export class AuthService {
+  oauthClient: Auth.OAuth2Client;
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
     private configService: ConfigService,
-  ) {}
+  ) {
+    const clientID = this.configService.get('GOOGLE_OAUTH_CLIENT_ID');
+    const clientSecret = this.configService.get('GOOGLE_OAUTH_CLIENT_SECRET');
+    this.oauthClient = new google.auth.OAuth2(clientID, clientSecret);
+  }
 
   async signup(dto: SignupDto) {
     const hashedPassword = await argon.hash(dto.password);
@@ -88,6 +95,52 @@ export class AuthService {
     return {
       access: accessToken,
       refresh: refreshToken,
+    };
+  }
+
+  async googleAuthenticate(tokenData: GoogleTokenVerificationDto) {
+    const tokenInfo = await this.oauthClient.verifyIdToken({
+      idToken: tokenData.token,
+    });
+
+    const email = tokenInfo.getPayload().email;
+
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email,
+        provider: 'google',
+      },
+    });
+
+    if (!user) {
+      const newUser = await this.prisma.user.create({
+        data: {
+          email,
+          provider: 'google',
+          firstName: tokenInfo.getPayload().given_name,
+          lastName: tokenInfo.getPayload().family_name,
+          username: tokenInfo.getPayload().email.split('@')[0],
+          isVerified: tokenInfo.getPayload().email_verified,
+        },
+      });
+      delete user.password_hash;
+
+      return {
+        user: newUser,
+        tokens: {
+          access: await this.assignAccessToken(newUser.id),
+          refresh: await this.assignRefreshToken(newUser.id),
+        },
+      };
+    }
+
+    delete user.password_hash;
+    return {
+      user,
+      tokens: {
+        access: await this.assignAccessToken(user.id),
+        refresh: await this.assignRefreshToken(user.id),
+      },
     };
   }
 
