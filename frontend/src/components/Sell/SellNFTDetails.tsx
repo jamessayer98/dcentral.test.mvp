@@ -1,17 +1,9 @@
-import {
-  Box,
-  Button,
-  Container,
-  Heading,
-  Image,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { NFTDescriptionTable } from "./NFTDescriptionTable";
+import { Box, Container, Heading, Image, Stack, Text } from "@chakra-ui/react";
+import { SellPriceModal } from "./SellPriceModal";
 
 type Props = {};
 
-export const NFTDetails = (props: Props) => {
+export const SellNFTDetails = (props: Props) => {
   return (
     <Container maxWidth="1000px" mt={3} py={3}>
       <Stack direction={["column", "column", "row"]} spacing={4}>
@@ -24,7 +16,7 @@ export const NFTDetails = (props: Props) => {
           <Image
             borderRadius={10}
             objectFit="contain"
-            src="https://lh3.googleusercontent.com/tdWPH_UcLdIFqSLK7MapK5cHR_G9IBuMCIf7Is-AW_etOiaPOmjkKrwShgTfXc-isCvfv7Vi5XXMIIJiO_zWf6_I5qJq0RCRKTxs=w600"
+            src="https://lh3.googleusercontent.com/ViaGqCKMMptuIR9_KaEeevN42T7CdjOXBlvkKH5N8PoO8isRhBVbDLSH8c9bAb4AaTMfNbbbeiwTbgPcx0Z9INDsSPbrJZYJN6jezg=w600"
             alt="Cool NFT"
             fallbackSrc="https://via.placeholder.com/300"
           />
@@ -38,9 +30,7 @@ export const NFTDetails = (props: Props) => {
             p={3}
           >
             <Heading color="purple.400">Ghost #2163</Heading>
-            <Button my={4} w="100%" bgColor="purple.400" colorScheme="purple">
-              Buy
-            </Button>
+            <SellPriceModal />
           </Box>
           <Box
             borderRadius={10}
@@ -58,18 +48,6 @@ export const NFTDetails = (props: Props) => {
               </Text>{" "}
               The underbelly of Web3. A shadow vague, formless, but eternal.
             </Text>
-          </Box>
-          <Box
-            borderRadius={10}
-            border="1px"
-            borderColor="purple.400"
-            w="100%"
-            p={3}
-          >
-            <Heading size="md" my={3}>
-              Details
-            </Heading>
-            <NFTDescriptionTable />
           </Box>
         </Stack>
       </Stack>

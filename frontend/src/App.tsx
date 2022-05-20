@@ -1,10 +1,11 @@
 import { ChakraProvider, Flex, Spinner, theme } from "@chakra-ui/react";
-import {
-  BrowserRouter as Router,
-  Navigate,
-  Route,
-  Routes,
-} from "react-router-dom";
+import
+  {
+    BrowserRouter as Router,
+    Navigate,
+    Route,
+    Routes
+  } from "react-router-dom";
 import { Authenticated } from "./components/auth/Authenticated";
 import { Login } from "./components/auth/Login";
 import { PublicRoute } from "./components/auth/PublicRoute";
@@ -12,6 +13,9 @@ import { Register } from "./components/auth/Register";
 import { Home } from "./components/Home/Home";
 import { NFTDetails } from "./components/Home/NFTDetails";
 import { Navbar } from "./components/Navbar/Navbar";
+import { SellNFTDetails } from "./components/Sell/SellNFTDetails";
+import { Profile } from "./components/User/Profile";
+import { UserNFTCollection } from "./components/User/UserNFTCollection";
 import { AuthConsumer, AuthProvider } from "./context/JWTAuthContext";
 
 export const App = () => (
@@ -59,10 +63,34 @@ export const App = () => (
                     }
                   />
                   <Route
-                    path="/n/:id"
+                    path="/sell/:id"
+                    element={
+                      <Authenticated>
+                        <SellNFTDetails />
+                      </Authenticated>
+                    }
+                  />
+                  <Route
+                    path="/buy/:id"
                     element={
                       <Authenticated>
                         <NFTDetails />
+                      </Authenticated>
+                    }
+                  />
+                  <Route
+                    path="/my-collection"
+                    element={
+                      <Authenticated>
+                        <UserNFTCollection />
+                      </Authenticated>
+                    }
+                  />
+                  <Route
+                    path="/u/profile"
+                    element={
+                      <Authenticated>
+                        <Profile />
                       </Authenticated>
                     }
                   />
