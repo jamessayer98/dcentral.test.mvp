@@ -10,9 +10,9 @@ import { Link } from "react-router-dom";
 
 type Props = {};
 
-export const NFTCard = (props: Props) => {
+export const UserNFTCard = (props: Props) => {
   return (
-    <Link to="/buy/1">
+    <Link to="/sell/1">
       <Stack>
         <Box
           bg={useColorModeValue("gray.200", "gray.600")}
@@ -29,7 +29,7 @@ export const NFTCard = (props: Props) => {
           <Image
             borderRadius={10}
             objectFit="contain"
-            src="https://lh3.googleusercontent.com/tdWPH_UcLdIFqSLK7MapK5cHR_G9IBuMCIf7Is-AW_etOiaPOmjkKrwShgTfXc-isCvfv7Vi5XXMIIJiO_zWf6_I5qJq0RCRKTxs=w600"
+            src="https://lh3.googleusercontent.com/cMNCGsTG0Li4wC2dBC3jZevN4be9aXM1lNQ9JG334IDaMgJNQXAJXfvr0pFrvvkIeESSBYPwMr5QGl0SGofj7jf4r8UTqsSMsjkw=w600"
             alt="Cool NFT"
             fallbackSrc="https://via.placeholder.com/300"
           />
