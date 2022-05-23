@@ -1,7 +1,8 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
+import * as argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditUserDto, UpdatePasswordDto } from './dto';
-import * as argon from 'argon2';
+import { UserOutEntity } from './entities';
 
 @Injectable()
 export class UserService {
@@ -15,16 +16,10 @@ export class UserService {
       },
     });
 
-    delete user.password_hash;
-
-    return user;
+    return new UserOutEntity(user);
   }
 
   async updatePassword(userId: number, dto: UpdatePasswordDto) {
-    if (!dto.old_password) {
-      throw new ForbiddenException('old_password is required.');
-    }
-
     const oldUser = await this.prismaService.user.findUnique({
       where: {
         id: userId,
@@ -43,8 +38,6 @@ export class UserService {
       },
     });
 
-    delete user.password_hash;
-
-    return user;
+    return new UserOutEntity(user);
   }
 }

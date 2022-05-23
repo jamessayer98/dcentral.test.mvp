@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import * as argon from 'argon2';
 import { Auth, google } from 'googleapis';
+import { UserOutEntity } from 'src/user/entities';
 import { PrismaService } from '../prisma/prisma.service';
 import { SigninDto, SignupDto } from './dto';
 import { GoogleTokenVerificationDto } from './dto/google-auth.dto';
@@ -66,13 +67,11 @@ export class AuthService {
     const pwValid = await argon.verify(user.password_hash, dto.password);
     if (!pwValid) throw new BadRequestException('Invalid credentials');
 
-    delete user.password_hash;
-
     const accessToken = await this.assignAccessToken(user.id);
     const refreshToken = await this.assignRefreshToken(user.id);
 
     return {
-      user,
+      user: new UserOutEntity(user),
       tokens: { access: accessToken, refresh: refreshToken },
     };
   }
@@ -136,10 +135,9 @@ export class AuthService {
           isVerified: tokenInfo.getPayload().email_verified,
         },
       });
-      delete newUser.password_hash;
 
       return {
-        user: newUser,
+        user: new UserOutEntity(newUser),
         tokens: {
           access: await this.assignAccessToken(newUser.id),
           refresh: await this.assignRefreshToken(newUser.id),
@@ -147,9 +145,8 @@ export class AuthService {
       };
     }
 
-    delete user.password_hash;
     return {
-      user,
+      user: new UserOutEntity(user),
       tokens: {
         access: await this.assignAccessToken(user.id),
         refresh: await this.assignRefreshToken(user.id),
