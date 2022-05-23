@@ -18,7 +18,11 @@ export class AuthService {
   ) {
     const clientID = this.configService.get('GOOGLE_OAUTH_CLIENT_ID');
     const clientSecret = this.configService.get('GOOGLE_OAUTH_CLIENT_SECRET');
-    this.oauthClient = new google.auth.OAuth2(clientID, clientSecret);
+    this.oauthClient = new google.auth.OAuth2(
+      clientID,
+      clientSecret,
+      'postmessage',
+    );
   }
 
   async signup(dto: SignupDto) {
@@ -99,10 +103,19 @@ export class AuthService {
   }
 
   async googleAuthenticate(tokenData: GoogleTokenVerificationDto) {
-    const tokenInfo = await this.oauthClient.verifyIdToken({
-      idToken: tokenData.token,
-    });
+    try {
+      const tokensPaylod = await this.oauthClient.getToken(tokenData.code);
+      const userPayload = await this.handleGoogleLogin(tokensPaylod.tokens);
+      return userPayload;
+    } catch (error) {
+      throw new BadRequestException('Could not login with google');
+    }
+  }
 
+  private async handleGoogleLogin(tokenPayload: Auth.Credentials) {
+    const tokenInfo = await this.oauthClient.verifyIdToken({
+      idToken: tokenPayload.id_token,
+    });
     const email = tokenInfo.getPayload().email;
 
     const user = await this.prisma.user.findFirst({
@@ -123,7 +136,7 @@ export class AuthService {
           isVerified: tokenInfo.getPayload().email_verified,
         },
       });
-      delete user.password_hash;
+      delete newUser.password_hash;
 
       return {
         user: newUser,

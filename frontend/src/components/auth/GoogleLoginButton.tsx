@@ -1,25 +1,23 @@
 import { Button, useToast } from "@chakra-ui/react";
-import {
-  GoogleLogin,
-  GoogleLoginResponse,
-  GoogleLoginResponseOffline,
-} from "react-google-login";
+import { useGoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
 import { useAuth } from "../../hooks/useAuth";
-import { axiosOpenInstance } from "../../services/axios";
+import axiosInstance from "../../services/axios";
 
 function GoogleButton() {
-  const clientId = process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID;
   const { googleLogin } = useAuth();
   const toast = useToast();
-  const handleSuccess = (
-    response: GoogleLoginResponse | GoogleLoginResponseOffline
-  ) => {
-    console.log("success");
-    if ("accessToken" in response) {
-      const accessToken = response.accessToken;
-      axiosOpenInstance
-        .post("/v1/auth/google", { accessToken })
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => handleSuccess(codeResponse),
+    onError: (error) => console.log(error),
+    scope: "profile email",
+    flow: "auth-code",
+  });
+  const handleSuccess = (response: any) => {
+    if ("code" in response) {
+      const code = response.code;
+      axiosInstance
+        .post("/v1/auth/google", { code })
         .then((res) => {
           const { user, tokens } = res.data;
           googleLogin(user, tokens);
@@ -42,35 +40,16 @@ function GoogleButton() {
   };
 
   return (
-    <GoogleLogin
-      clientId={clientId}
-      onSuccess={handleSuccess}
-      onFailure={(err) => {
-        console.log(err);
-        // toast({
-        //   title: `Something went wrong. Please try again`,
-        //   status: "error",
-        //   isClosable: true,
-        //   duration: 1500,
-        // });
-      }}
-      scope="profile email"
-      cookiePolicy="single_host_origin"
-      render={(renderProps) => (
-        <Button
-          leftIcon={<FcGoogle />}
-          onClick={renderProps.onClick}
-          disabled={renderProps.disabled || !clientId}
-          width="100%"
-          colorScheme="purple"
-          variant="outline"
-          mb={6}
-          type="submit"
-        >
-          Google
-        </Button>
-      )}
-    />
+    <Button
+      leftIcon={<FcGoogle />}
+      onClick={() => login()}
+      width="100%"
+      colorScheme="purple"
+      variant="outline"
+      mb={6}
+    >
+      Google
+    </Button>
   );
 }
 
