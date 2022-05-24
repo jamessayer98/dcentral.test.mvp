@@ -50,7 +50,9 @@ export class AuthService {
         if (error.code === 'P2002') {
           throw new BadRequestException('Email already exists');
         }
-        throw error;
+        throw new BadRequestException(
+          'Something went wrong. Please try again.',
+        );
       }
     }
   }
