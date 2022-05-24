@@ -1,4 +1,5 @@
 import { ChakraProvider, Flex, Spinner, theme } from "@chakra-ui/react";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import
   {
     BrowserRouter as Router,
@@ -20,6 +21,7 @@ import { AuthConsumer, AuthProvider } from "./context/JWTAuthContext";
 
 export const App = () => (
   <ChakraProvider theme={theme}>
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID}>
     <AuthProvider>
       <Router>
         <AuthConsumer>
@@ -102,5 +104,6 @@ export const App = () => (
         </AuthConsumer>
       </Router>
     </AuthProvider>
+    </GoogleOAuthProvider>
   </ChakraProvider>
 );

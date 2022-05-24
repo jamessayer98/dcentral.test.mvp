@@ -24,9 +24,8 @@ export const SellPriceModal = (props: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     handleSubmit,
-    register,
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     defaultValues: {
       price: "",

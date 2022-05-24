@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import * as argon from 'argon2';
 import { Auth, google } from 'googleapis';
+import { UserOutEntity } from 'src/user/entities';
 import { PrismaService } from '../prisma/prisma.service';
 import { SigninDto, SignupDto } from './dto';
 import { GoogleTokenVerificationDto } from './dto/google-auth.dto';
@@ -18,7 +19,11 @@ export class AuthService {
   ) {
     const clientID = this.configService.get('GOOGLE_OAUTH_CLIENT_ID');
     const clientSecret = this.configService.get('GOOGLE_OAUTH_CLIENT_SECRET');
-    this.oauthClient = new google.auth.OAuth2(clientID, clientSecret);
+    this.oauthClient = new google.auth.OAuth2(
+      clientID,
+      clientSecret,
+      'postmessage',
+    );
   }
 
   async signup(dto: SignupDto) {
@@ -62,13 +67,11 @@ export class AuthService {
     const pwValid = await argon.verify(user.password_hash, dto.password);
     if (!pwValid) throw new BadRequestException('Invalid credentials');
 
-    delete user.password_hash;
-
     const accessToken = await this.assignAccessToken(user.id);
     const refreshToken = await this.assignRefreshToken(user.id);
 
     return {
-      user,
+      user: new UserOutEntity(user),
       tokens: { access: accessToken, refresh: refreshToken },
     };
   }
@@ -99,10 +102,19 @@ export class AuthService {
   }
 
   async googleAuthenticate(tokenData: GoogleTokenVerificationDto) {
-    const tokenInfo = await this.oauthClient.verifyIdToken({
-      idToken: tokenData.token,
-    });
+    try {
+      const tokensPaylod = await this.oauthClient.getToken(tokenData.code);
+      const userPayload = await this.handleGoogleLogin(tokensPaylod.tokens);
+      return userPayload;
+    } catch (error) {
+      throw new BadRequestException('Could not login with google');
+    }
+  }
 
+  private async handleGoogleLogin(tokenPayload: Auth.Credentials) {
+    const tokenInfo = await this.oauthClient.verifyIdToken({
+      idToken: tokenPayload.id_token,
+    });
     const email = tokenInfo.getPayload().email;
 
     const user = await this.prisma.user.findFirst({
@@ -123,10 +135,9 @@ export class AuthService {
           isVerified: tokenInfo.getPayload().email_verified,
         },
       });
-      delete user.password_hash;
 
       return {
-        user: newUser,
+        user: new UserOutEntity(newUser),
         tokens: {
           access: await this.assignAccessToken(newUser.id),
           refresh: await this.assignRefreshToken(newUser.id),
@@ -134,9 +145,8 @@ export class AuthService {
       };
     }
 
-    delete user.password_hash;
     return {
-      user,
+      user: new UserOutEntity(user),
       tokens: {
         access: await this.assignAccessToken(user.id),
         refresh: await this.assignRefreshToken(user.id),
