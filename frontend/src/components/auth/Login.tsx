@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import ThemeToggeler from "../theme/ThemeToggler";
+import { WalletButton } from "../wallet-button";
 import GoogleButton from "./GoogleLoginButton";
 
 export const Login = () => {
@@ -116,6 +117,7 @@ export const Login = () => {
         >
           Register Instead
         </Button>
+        <WalletButton />
       </Flex>
     </Flex>
   );
