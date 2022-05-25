@@ -18,92 +18,95 @@ import { SellNFTDetails } from "./components/Sell/SellNFTDetails";
 import { Profile } from "./components/User/Profile";
 import { UserNFTCollection } from "./components/User/UserNFTCollection";
 import { AuthConsumer, AuthProvider } from "./context/JWTAuthContext";
+import { Web3Provider } from "./context/Web3Provider";
 
 export const App = () => (
   <ChakraProvider theme={theme}>
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID}>
-    <AuthProvider>
-      <Router>
-        <AuthConsumer>
-          {(auth) =>
-            !auth.isInitialized ? (
-              <Flex height="100vh" alignItems="center" justifyContent="center">
-                <Spinner
-                  thickness="4px"
-                  speed="0.65s"
-                  emptyColor="green.200"
-                  color="green.500"
-                  size="xl"
-                />
-              </Flex>
-            ) : (
-              <Routes>
-                <Route
-                  path="/login"
-                  element={
-                    <PublicRoute>
-                      <Login />
-                    </PublicRoute>
-                  }
-                />
-                <Route
-                  path="/register"
-                  element={
-                    <PublicRoute>
-                      <Register />
-                    </PublicRoute>
-                  }
-                />
-                {/* Authenticated Routes */}
-                <Route path="/" element={<Navbar />}>
-                  <Route
-                    index
-                    element={
-                      <Authenticated>
-                        <Home />
-                      </Authenticated>
-                    }
-                  />
-                  <Route
-                    path="/sell/:id"
-                    element={
-                      <Authenticated>
-                        <SellNFTDetails />
-                      </Authenticated>
-                    }
-                  />
-                  <Route
-                    path="/buy/:id"
-                    element={
-                      <Authenticated>
-                        <NFTDetails />
-                      </Authenticated>
-                    }
-                  />
-                  <Route
-                    path="/my-collection"
-                    element={
-                      <Authenticated>
-                        <UserNFTCollection />
-                      </Authenticated>
-                    }
-                  />
-                  <Route
-                    path="/u/profile"
-                    element={
-                      <Authenticated>
-                        <Profile />
-                      </Authenticated>
-                    }
-                  />
-                </Route>
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            )
-          }
-        </AuthConsumer>
-      </Router>
-    </AuthProvider>
+      <Web3Provider>
+        <AuthProvider>
+          <Router>
+            <AuthConsumer>
+              {(auth) =>
+                !auth.isInitialized ? (
+                  <Flex height="100vh" alignItems="center" justifyContent="center">
+                    <Spinner
+                      thickness="4px"
+                      speed="0.65s"
+                      emptyColor="green.200"
+                      color="green.500"
+                      size="xl"
+                    />
+                  </Flex>
+                ) : (
+                  <Routes>
+                    <Route
+                      path="/login"
+                      element={
+                        <PublicRoute>
+                          <Login />
+                        </PublicRoute>
+                      }
+                    />
+                    <Route
+                      path="/register"
+                      element={
+                        <PublicRoute>
+                          <Register />
+                        </PublicRoute>
+                      }
+                    />
+                    {/* Authenticated Routes */}
+                    <Route path="/" element={<Navbar />}>
+                      <Route
+                        index
+                        element={
+                          <Authenticated>
+                            <Home />
+                          </Authenticated>
+                        }
+                      />
+                      <Route
+                        path="/sell/:id"
+                        element={
+                          <Authenticated>
+                            <SellNFTDetails />
+                          </Authenticated>
+                        }
+                      />
+                      <Route
+                        path="/buy/:id"
+                        element={
+                          <Authenticated>
+                            <NFTDetails />
+                          </Authenticated>
+                        }
+                      />
+                      <Route
+                        path="/my-collection"
+                        element={
+                          <Authenticated>
+                            <UserNFTCollection />
+                          </Authenticated>
+                        }
+                      />
+                      <Route
+                        path="/u/profile"
+                        element={
+                          <Authenticated>
+                            <Profile />
+                          </Authenticated>
+                        }
+                      />
+                    </Route>
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                )
+              }
+            </AuthConsumer>
+          </Router>
+        </AuthProvider>
+      </Web3Provider>
     </GoogleOAuthProvider>
   </ChakraProvider>
 );
