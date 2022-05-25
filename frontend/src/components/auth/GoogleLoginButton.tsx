@@ -1,11 +1,13 @@
 import { Button, useToast } from "@chakra-ui/react";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useAuth } from "../../hooks/useAuth";
 import axiosInstance from "../../services/axios";
 
 function GoogleButton() {
   const { googleLogin } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => handleSuccess(codeResponse),
@@ -16,6 +18,7 @@ function GoogleButton() {
   const handleSuccess = (response: any) => {
     if ("code" in response) {
       const code = response.code;
+      setIsLoading(true);
       axiosInstance
         .post("/v1/auth/google", { code })
         .then((res) => {
@@ -35,7 +38,8 @@ function GoogleButton() {
             isClosable: true,
             duration: 1500,
           });
-        });
+        })
+        .finally(() => setIsLoading(false));
     }
   };
 
@@ -43,6 +47,7 @@ function GoogleButton() {
     <Button
       leftIcon={<FcGoogle />}
       onClick={() => login()}
+      isLoading={isLoading}
       width="100%"
       colorScheme="purple"
       variant="outline"
