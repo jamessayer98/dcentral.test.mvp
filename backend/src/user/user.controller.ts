@@ -4,12 +4,13 @@ import {
   Controller,
   Get,
   Patch,
+  Post,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { GetUser } from 'src/auth/decorators';
 import { JwtAuthGuard } from 'src/auth/guards';
-import { EditUserDto, UpdatePasswordDto } from './dto';
+import { ConnectMetamaskDto, EditUserDto, UpdatePasswordDto } from './dto';
 import { SystemUser } from './interfaces';
 import { UserService } from './user.service';
 
@@ -35,5 +36,13 @@ export class UserController {
     @Body() dto: UpdatePasswordDto,
   ) {
     return this.userService.updatePassword(userId, dto);
+  }
+
+  @Post('metamask/connect')
+  connectMetamask(
+    @GetUser('id') userId: number,
+    @Body() dto: ConnectMetamaskDto,
+  ) {
+    return this.userService.connectMetamask(userId, dto);
   }
 }
