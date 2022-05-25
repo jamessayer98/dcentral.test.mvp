@@ -1,9 +1,18 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RefreshTokenDto, SigninDto, SignupDto } from './dto';
 import { GoogleTokenVerificationDto } from './dto/google-auth.dto';
 
 @Controller('auth')
+@UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   constructor(private authService: AuthService) {}
 

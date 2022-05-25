@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { axiosOpenInstance } from "../../services/axios";
+import axiosInstance from "../../services/axios";
 import ThemeToggeler from "../theme/ThemeToggler";
 
 export const Register = () => {
@@ -29,7 +29,7 @@ export const Register = () => {
   });
 
   function onSubmit(values: { email: string; password: string }) {
-    axiosOpenInstance
+    axiosInstance
       .post("/v1/auth/signup", values)
       .then(() => {
         toast({
@@ -71,6 +71,10 @@ export const Register = () => {
               mt={6}
               {...register("email", {
                 required: "This filed is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                  message: "Invalid email address",
+                },
               })}
             />
             <FormErrorMessage>
