@@ -64,7 +64,8 @@ export class AuthService {
       },
     });
 
-    if (!user) throw new BadRequestException('Invalid credentials');
+    if (!user || user.provider !== 'email')
+      throw new BadRequestException('Invalid credentials');
 
     const pwValid = await argon.verify(user.password_hash, dto.password);
     if (!pwValid) throw new BadRequestException('Invalid credentials');

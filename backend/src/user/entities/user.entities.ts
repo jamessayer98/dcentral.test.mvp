@@ -10,6 +10,7 @@ export class UserOutEntity {
   updatedAt: Date;
   isVerified: boolean;
   blocked: boolean;
+  metamaskAddress: string | null;
 
   @Exclude()
   password_hash: string;
