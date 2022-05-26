@@ -33,7 +33,7 @@ export class Core {
     const connector = connectors[this.providerId];
     let opts: Partial<IProviderInfo>;
     try {
-      if (this.providerId === "injected") {
+      if (this.providerId === "injected" && this.providerName == "MetaMask") {
         opts = {
           name: this.providerName,
           check: this.providerCheck,
