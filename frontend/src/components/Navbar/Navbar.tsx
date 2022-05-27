@@ -14,7 +14,6 @@ import React from "react";
 import { AiFillDownCircle } from "react-icons/ai";
 import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { useContract } from "../../hooks/useContract";
 import { ColorModeSwitcher } from "../theme/ColorModeSwitcher";
 import { WalletButton } from "../wallet-button";
 

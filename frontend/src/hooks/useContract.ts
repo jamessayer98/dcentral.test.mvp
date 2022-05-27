@@ -1,75 +1,99 @@
-import { ethers } from "ethers";
-import Contract from "../helpers/contractabi.json";
+import { BigNumber, Contract } from "ethers";
+import artifact from "../helpers/contractabi.json";
 import { useWeb3 } from "../context/Web3Provider";
+import { MarketItems } from "../types/contract.types";
+import { bigNumberToEther, ethersToWei } from "../utils/contract";
 const contractAddress = "0x9c242c11df4c05de56d2ecc3df2b7b342d9360f9";
 
 export const useContract = () => {
   const { web3 } = useWeb3();
-
   const { provider, signer } = web3;
 
-  let signerContract: ethers.Contract;
-  let nonSignerContract: ethers.Contract;
+  let signerContract: Contract;
+  let nonSignerContract: Contract;
 
   if (provider && signer) {
-    signerContract = new ethers.Contract(contractAddress, Contract.abi, signer);
-
-    nonSignerContract = new ethers.Contract(
-      contractAddress,
-      Contract.abi,
-      provider
-    );
+    signerContract = new Contract(contractAddress, artifact.abi, signer);
+    nonSignerContract = new Contract(contractAddress, artifact.abi, provider);
   }
+
   const updateListingPrice = async (price: number) => {
-    const txHash = await signerContract.updateListingPrice(price);
+    if (!isWalletConnected()) return;
+
+    const txHash = await signerContract.updateListingPrice(ethersToWei(price));
     return txHash;
   };
 
   const getListingPrice = async () => {
-    const price = await nonSignerContract.getListingPrice();
-    return price;
+    if (!isWalletConnected()) return;
+
+    const hexPrice: BigNumber = await nonSignerContract.getListingPrice();
+    return bigNumberToEther(hexPrice);
   };
 
   const mintNft = async (tokenURI: string) => {
-    const tokenId = await signerContract.mintNft(tokenURI);
+    if (!isWalletConnected()) return;
+
+    const tokenId: number = await signerContract.mintNft(tokenURI);
     return tokenId;
   };
 
   const createMarketItem = async (tokenId: number, price: number) => {
-    const txHash = await signerContract.createMarketItem(tokenId, price);
-    return txHash;
-    //Add event
+    if (!isWalletConnected()) return;
+
+    const txHash = await signerContract.createMarketItem(
+      tokenId,
+      ethersToWei(price)
+    );
+    const reciept = await txHash.wait();
+    return reciept;
   };
 
   const resellNft = async (tokenId: number, price: number) => {
-    const txHash = await signerContract.resellNft(tokenId, price);
-    return txHash;
+    if (!isWalletConnected()) return;
+
+    const txHash = await signerContract.resellNft(tokenId, ethersToWei(price));
+    const reciept = await txHash.wait();
+    return reciept;
   };
 
   const createMarketSale = async (tokenId: number) => {
+    if (!isWalletConnected()) return;
+
     const txHash = await signerContract.createMarketSale(tokenId);
-    return txHash;
+    const reciept = await txHash.wait();
+    return reciept;
   };
 
   const fetchMarketItems = async () => {
-    const marketItems = await nonSignerContract.fetchMarketItems();
+    if (!isWalletConnected()) return;
+
+    const marketItems: MarketItems = await nonSignerContract.fetchMarketItems();
     return marketItems;
   };
 
   const fetchMyNFTs = async () => {
-    const items = await nonSignerContract.fetchMyNFTs();
-    return items;
+    if (!isWalletConnected()) return;
+
+    const myNfts: MarketItems = await nonSignerContract.fetchMyNFTs();
+    return myNfts;
   };
 
   const fetchItemsListed = async () => {
-    const items = await nonSignerContract.fetchItemsListed();
-    return items;
+    if (!isWalletConnected()) return;
+
+    const itemsListed: MarketItems = await nonSignerContract.fetchItemsListed();
+    return itemsListed;
   };
 
   const creatorOfNft = async (id: number) => {
-    const address = await nonSignerContract.creatorOfNft();
+    if (!isWalletConnected()) return;
+
+    const address: string = await nonSignerContract.creatorOfNft(id);
     return address;
   };
+
+  const isWalletConnected = () => !!nonSignerContract && !!signerContract;
 
   return {
     updateListingPrice,

@@ -52,10 +52,10 @@ export const NFTDetails = (props: Props) => {
             <Heading size="md" my={3}>
               Description
             </Heading>
+            <Text color="purple.400" my={3} textDecoration="underline">
+              Created by PhantomNetwork
+            </Text>
             <Text>
-              <Text color="purple.400" my={3} textDecoration="underline">
-                Created by PhantomNetwork
-              </Text>{" "}
               The underbelly of Web3. A shadow vague, formless, but eternal.
             </Text>
           </Box>
