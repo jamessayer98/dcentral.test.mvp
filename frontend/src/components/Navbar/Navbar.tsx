@@ -14,10 +14,13 @@ import React from "react";
 import { AiFillDownCircle } from "react-icons/ai";
 import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { useContract } from "../../hooks/useContract";
 import { ColorModeSwitcher } from "../theme/ColorModeSwitcher";
+import { WalletButton } from "../wallet-button";
 
 export const Navbar: React.FC = () => {
   const { logout } = useAuth();
+
   return (
     <Box minHeight="100vh">
       <Flex
@@ -40,6 +43,7 @@ export const Navbar: React.FC = () => {
             Logout
           </Button>
           <Menu>
+            <WalletButton />
             <MenuButton as={Button} rightIcon={<AiFillDownCircle />}>
               Profile
             </MenuButton>
