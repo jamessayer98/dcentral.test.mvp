@@ -11,7 +11,7 @@ import {
 import { useWalletOpts } from "../../hooks/useWalletOpts";
 
 export const WalletButton: FC = () => {
-  const { web3, setWeb3 } = useWeb3();
+  const { setWeb3 } = useWeb3();
   const { walletOpts, setWalletOpts } = useWalletOpts();
   const { address, id, type, check, name } = walletOpts;
 
