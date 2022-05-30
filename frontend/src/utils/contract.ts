@@ -11,3 +11,14 @@ export const ethersToWei = (ethers: Number | number) => {
   const wei = parseEther(String(ethers));
   return wei;
 };
+
+export const bigNumberToNumber = (number: BigNumber) => {
+  const numberStr = number.toString();
+  return Number(numberStr);
+};
+
+export const getImageUrl = (metadataImage: string) => {
+  if (metadataImage === "") return "";
+  const strippedMetaImage = metadataImage.split("ipfs://")[1];
+  return `https://ipfs.io/ipfs/${strippedMetaImage}`;
+};
