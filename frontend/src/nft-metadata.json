@@ -1,0 +1,16 @@
+{
+    "attributes": [
+      {
+        "trait_type": "Breed",
+        "value": "Maltipoo"
+      },
+      {
+        "trait_type": "Eye color",
+        "value": "Mocha"
+      }
+    ],
+    "description": "My picture in mountains.",
+    "image": "ipfs://QmboXt6VNZRzavU64CVx5arayXWrb9sYo52R8rNSACMzoG",
+    "name": "Tajammul"
+  }
+  

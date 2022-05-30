@@ -1,7 +1,7 @@
 import { BigNumber, Contract } from "ethers";
 import artifact from "../helpers/contractabi.json";
 import { useWeb3 } from "../context/Web3Provider";
-import { MarketItems } from "../types/contract.types";
+import { MarketItems, NFTMetadata } from "../types/contract.types";
 import { bigNumberToEther, ethersToWei } from "../utils/contract";
 const contractAddress = "0x9c242c11df4c05de56d2ecc3df2b7b342d9360f9";
 
@@ -34,8 +34,33 @@ export const useContract = () => {
   const mintNft = async (tokenURI: string) => {
     if (!isWalletConnected()) return;
 
-    const tokenId: number = await signerContract.mintNft(tokenURI);
-    return tokenId;
+    const txHash = await signerContract.mintNft(tokenURI);
+    signerContract.on("Transfer", (_, __, tokenId) => {
+      console.log("NFT successfully minted with tokenId: ");
+      console.log(tokenId);
+    });
+    return txHash;
+  };
+
+  const tokenUri = async (tokenId: number) => {
+    if (!isWalletConnected()) return;
+
+    const uri = await nonSignerContract.tokenURI(tokenId);
+    return uri;
+  };
+
+  const NFTmetadata = async (tokenUri: string) => {
+    const resp = await fetch(`https://gateway.pinata.cloud/ipfs/${tokenUri}`);
+    const respJson: NFTMetadata = await resp.json();
+    return respJson;
+  };
+
+  const getNftMetadata = async (tokenId: number) => {
+    if (!isWalletConnected()) return;
+
+    const uri = await tokenUri(tokenId);
+    const metadata = await NFTmetadata(uri);
+    return metadata;
   };
 
   const createMarketItem = async (tokenId: number, price: number) => {
@@ -43,7 +68,20 @@ export const useContract = () => {
 
     const txHash = await signerContract.createMarketItem(
       tokenId,
-      ethersToWei(price)
+      ethersToWei(price),
+      {
+        value: ethersToWei(0.0025),
+      }
+    );
+    signerContract.on(
+      "MarketItemCreated",
+      (tokenId, creator, owner, seller, price, sold) => {
+        console.log(tokenId);
+        console.log(creator);
+        console.log(owner);
+        console.log(seller);
+        console.log(price);
+      }
     );
     const reciept = await txHash.wait();
     return reciept;
@@ -99,6 +137,9 @@ export const useContract = () => {
     updateListingPrice,
     getListingPrice,
     mintNft,
+    tokenUri,
+    NFTmetadata,
+    getNftMetadata,
     resellNft,
     createMarketItem,
     createMarketSale,
