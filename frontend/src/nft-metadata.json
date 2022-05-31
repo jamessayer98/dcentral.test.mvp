@@ -1,16 +1,16 @@
 {
     "attributes": [
       {
-        "trait_type": "Breed",
-        "value": "Maltipoo"
+        "trait_type": "Location",
+        "value": "Naran"
       },
       {
-        "trait_type": "Eye color",
-        "value": "Mocha"
+        "trait_type": "Scene",
+        "value": "Mountains"
       }
     ],
     "description": "My picture in mountains.",
-    "image": "ipfs://QmboXt6VNZRzavU64CVx5arayXWrb9sYo52R8rNSACMzoG",
+    "image": "ipfs://QmVbRsYp1Bofwfy4RWWwtZuhcUUXfvUh7S6uJLVtM5JG8h",
     "name": "Tajammul"
   }
   

@@ -6,13 +6,28 @@ import {
   Stack,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { BigNumber } from "ethers";
 import { Link } from "react-router-dom";
+import {
+  bigNumberToEther,
+  bigNumberToNumber,
+  getImageUrl,
+} from "../../utils/contract";
 
-type Props = {};
+type Props = {
+  attributes?: Array<any>;
+  description?: string;
+  image?: string;
+  name?: string;
+  price?: BigNumber;
+  tokenId?: BigNumber;
+};
 
 export const NFTCard = (props: Props) => {
+  const { name, image, price, tokenId } = props;
+
   return (
-    <Link to="/buy/1">
+    <Link to={tokenId ? `/buy/${bigNumberToNumber(tokenId)}` : `/buy/1`}>
       <Stack>
         <Box
           bg={useColorModeValue("gray.200", "gray.600")}
@@ -29,13 +44,16 @@ export const NFTCard = (props: Props) => {
           <Image
             borderRadius={10}
             objectFit="contain"
-            src="https://lh3.googleusercontent.com/tdWPH_UcLdIFqSLK7MapK5cHR_G9IBuMCIf7Is-AW_etOiaPOmjkKrwShgTfXc-isCvfv7Vi5XXMIIJiO_zWf6_I5qJq0RCRKTxs=w600"
+            src={
+              getImageUrl(image || "") ||
+              "https://lh3.googleusercontent.com/tdWPH_UcLdIFqSLK7MapK5cHR_G9IBuMCIf7Is-AW_etOiaPOmjkKrwShgTfXc-isCvfv7Vi5XXMIIJiO_zWf6_I5qJq0RCRKTxs=w600"
+            }
             alt="Cool NFT"
             fallbackSrc="https://via.placeholder.com/300"
           />
           <Box p={2}>
             <Heading as="h3" size="md" my={1}>
-              The cool NFT
+              {name ? name : `The Cool NFT`}
             </Heading>
             <Heading
               as="h6"
@@ -43,7 +61,7 @@ export const NFTCard = (props: Props) => {
               mb={1}
               color={useColorModeValue("gray.600", "gray.300")}
             >
-              Ghost #3267
+              {tokenId ? `METT #${bigNumberToNumber(tokenId)}` : `Ghost #3737`}
             </Heading>
             <Divider />
             <Box display="flex" alignItems="center" justifyContent="flex-end">
@@ -53,7 +71,7 @@ export const NFTCard = (props: Props) => {
                 my={1}
                 color={useColorModeValue("gray.600", "gray.300")}
               >
-                $0.00
+                {price ? `${bigNumberToEther(price)} Eth` : `$0.00`}
               </Heading>
             </Box>
           </Box>

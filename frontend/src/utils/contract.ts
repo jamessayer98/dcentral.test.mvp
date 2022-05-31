@@ -18,7 +18,7 @@ export const bigNumberToNumber = (number: BigNumber) => {
 };
 
 export const getImageUrl = (metadataImage: string) => {
-  if (metadataImage === "") return "";
+  if (metadataImage === "") return undefined;
   const strippedMetaImage = metadataImage.split("ipfs://")[1];
   return `https://ipfs.io/ipfs/${strippedMetaImage}`;
 };

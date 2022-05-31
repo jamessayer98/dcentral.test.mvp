@@ -1,12 +1,11 @@
 import { ChakraProvider, Flex, Spinner, theme } from "@chakra-ui/react";
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import
-  {
-    BrowserRouter as Router,
-    Navigate,
-    Route,
-    Routes
-  } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
 import { Authenticated } from "./components/auth/Authenticated";
 import { Login } from "./components/auth/Login";
 import { PublicRoute } from "./components/auth/PublicRoute";
@@ -29,7 +28,11 @@ export const App = () => (
             <AuthConsumer>
               {(auth) =>
                 !auth.isInitialized ? (
-                  <Flex height="100vh" alignItems="center" justifyContent="center">
+                  <Flex
+                    height="100vh"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
                     <Spinner
                       thickness="4px"
                       speed="0.65s"

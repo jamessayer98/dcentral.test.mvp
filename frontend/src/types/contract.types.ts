@@ -11,13 +11,16 @@ export type MarketItem = {
 
 export type MarketItems = Array<MarketItem>;
 
+export type NFTAttributes = {
+  trait_type: string;
+  value: string;
+};
+
 export interface NFTMetadata {
-  attributes: Array<any>;
+  attributes: Array<NFTAttributes>;
   description: string;
   image: string;
   name: string;
 }
 
-export interface UserNFT extends NFTMetadata {
-  price: number;
-}
+export interface NFT extends Partial<NFTMetadata>, Partial<MarketItem> {}
