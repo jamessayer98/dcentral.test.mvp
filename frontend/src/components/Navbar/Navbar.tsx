@@ -43,7 +43,7 @@ export const Navbar: React.FC = () => {
           </Button>
           <Menu>
             <WalletButton />
-            <MenuButton as={Button} rightIcon={<AiFillDownCircle />}>
+            <MenuButton as={Button} rightIcon={<AiFillDownCircle />} colorScheme="purple">
               Profile
             </MenuButton>
             <MenuList>

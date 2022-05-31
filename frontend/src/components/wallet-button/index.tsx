@@ -48,6 +48,7 @@ export const WalletButton: FC = () => {
     <div>
       {address === "" ? (
         <Button
+          colorScheme="purple"
           onClick={() => {
             const opts: ICoreOptions = {
               id: "injected",
@@ -62,7 +63,7 @@ export const WalletButton: FC = () => {
           Connect MetaMask
         </Button>
       ) : (
-        <Button onClick={handleDisconnect}>
+        <Button onClick={handleDisconnect} colorScheme="purple">
           <FaWallet style={{ marginRight: "10px" }} />
           Disconnect
         </Button>
