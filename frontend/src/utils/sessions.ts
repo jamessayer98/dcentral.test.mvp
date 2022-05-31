@@ -25,6 +25,7 @@ export const resetSession = () => {
   localStorage.removeItem(ACCESS_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   delete axiosInstance.defaults.headers.common["Authorization"];
+  window.location.href="/login";
 };
 
 export const getSession = (): {
