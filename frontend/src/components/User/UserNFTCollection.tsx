@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Container, Grid, GridItem, Input } from "@chakra-ui/react";
+import { Button, Container, Grid, GridItem, Input, Divider } from "@chakra-ui/react";
 import { useWeb3 } from "../../context/Web3Provider";
 import { useContract } from "../../hooks/useContract";
 import { NFTMetadata, UserNFT } from "../../types/contract.types";
@@ -56,6 +56,24 @@ export const UserNFTCollection = (props: Props) => {
         }}
         gap={6}
       >
+        <Button onClick={handleMint}>Mint NFT</Button>
+        <Input
+          type="text"
+          name="tokenURI"
+          value={tokenURI}
+          onChange={handleInputChange}
+          placeholder="Enter Token URI"
+        />
+      </Grid>
+      <Divider mt={5} mb={5} orientation="horizontal" />
+      <Grid
+        templateColumns={{
+          sm: "repeat(1, 1fr)",
+          md: "repeat(2, 1fr)",
+          lg: "repeat(3, 1fr)",
+        }}
+        gap={6}
+      >
         {nftCollection.map((item, index) => {
           const { name, description, image, attributes, price } = item;
           return (
@@ -71,13 +89,6 @@ export const UserNFTCollection = (props: Props) => {
           );
         })}
       </Grid>
-      <Button onClick={handleMint}>Mint NFT</Button>
-      <Input
-        type="text"
-        name="tokenURI"
-        value={tokenURI}
-        onChange={handleInputChange}
-      />
     </Container>
   );
 };

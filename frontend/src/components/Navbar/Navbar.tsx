@@ -37,19 +37,19 @@ export const Navbar: React.FC = () => {
         </Link>
         <Stack direction="row" align="center" spacing={4}>
           <ColorModeSwitcher />
-          <Button onClick={logout} colorScheme="purple">
-            Logout
-          </Button>
           <Menu>
             <WalletButton />
             <MenuButton as={Button} rightIcon={<AiFillDownCircle />} colorScheme="purple">
               Profile
             </MenuButton>
             <MenuList>
-              <MenuItem><Link to="my-collection">My Collection</Link></MenuItem>
-              <MenuItem><Link to="/u/profile">Profile</Link></MenuItem>
+              <Link to="my-collection"><MenuItem>My Collection</MenuItem></Link>
+              <Link to="/u/profile"><MenuItem>Profile</MenuItem></Link>
             </MenuList>
           </Menu>
+          <Button onClick={logout} colorScheme="purple">
+            Logout
+          </Button>
         </Stack>
       </Flex>
       <Outlet />

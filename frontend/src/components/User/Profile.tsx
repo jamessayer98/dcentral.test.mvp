@@ -14,7 +14,7 @@ export const Profile = (props: Props) => {
             name={user.username}
             src="https://bit.ly/sage-adebayo"
           />
-          <Heading my={4}>{user.email}</Heading>
+          <Heading as="h6" size="md" my={3}>{user.email}</Heading>
         </Stack>
       </Box>
     </Container>
