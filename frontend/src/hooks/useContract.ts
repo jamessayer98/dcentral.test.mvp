@@ -3,7 +3,7 @@ import artifact from "../helpers/contractabi.json";
 import { useWeb3 } from "../context/Web3Provider";
 import { MarketItems, NFTMetadata } from "../types/contract.types";
 import { bigNumberToEther, ethersToWei } from "../utils/contract";
-const contractAddress = "0x9c242c11df4c05de56d2ecc3df2b7b342d9360f9";
+const contractAddress = "0x2847d7Acb475B86163Cd362DaafF61415FAFf37F";
 
 export const useContract = () => {
   const { web3 } = useWeb3();
@@ -63,6 +63,13 @@ export const useContract = () => {
     return metadata;
   };
 
+  const fetchItemsCreated = async () => {
+    if (isWalletConnected()) return;
+
+    const createdItems = await nonSignerContract.fetchItemsCreated();
+    return createdItems;
+  };
+
   const createMarketItem = async (tokenId: number, price: number) => {
     if (!isWalletConnected()) return;
 
@@ -70,7 +77,7 @@ export const useContract = () => {
       tokenId,
       ethersToWei(price),
       {
-        value: ethersToWei(0.0025),
+        value: 0,
       }
     );
     signerContract.on(
@@ -110,11 +117,26 @@ export const useContract = () => {
     return marketItems;
   };
 
-  const fetchMyNFTs = async () => {
+  const fetchAllMyNfts = async () => {
     if (!isWalletConnected()) return;
 
-    const myNfts: MarketItems = await nonSignerContract.fetchMyNFTs();
-    return myNfts;
+    const allNfts: MarketItems = await nonSignerContract.fetchAllOfMyNfts();
+    return allNfts;
+  };
+
+  const fetchCreatedNfts = async () => {
+    if (!isWalletConnected()) return;
+
+    const createdNfts: MarketItems =
+      await nonSignerContract.fetchMyCreatedNfts();
+    return createdNfts;
+  };
+
+  const fetchBoughtNfts = async () => {
+    if (!isWalletConnected()) return;
+
+    const boughtNfts: MarketItems = await nonSignerContract.fetchNftsBought();
+    return boughtNfts;
   };
 
   const fetchItemsListed = async () => {
@@ -131,6 +153,13 @@ export const useContract = () => {
     return address;
   };
 
+  const idToMarketItem = async (tokenId: number) => {
+    if (!isWalletConnected()) return;
+
+    const someResponse = await nonSignerContract.idToMarketItem(tokenId);
+    return someResponse;
+  };
+
   const isWalletConnected = () => !!nonSignerContract && !!signerContract;
 
   return {
@@ -141,11 +170,15 @@ export const useContract = () => {
     NFTmetadata,
     getNftMetadata,
     resellNft,
+    fetchItemsCreated,
     createMarketItem,
     createMarketSale,
     creatorOfNft,
-    fetchMyNFTs,
+    fetchAllMyNfts,
+    fetchCreatedNfts,
+    fetchBoughtNfts,
     fetchItemsListed,
     fetchMarketItems,
+    idToMarketItem,
   };
 };

@@ -6,22 +6,28 @@ import {
   Stack,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { BigNumber } from "ethers";
 import { Link } from "react-router-dom";
-import { getImageUrl } from "../../utils/contract";
+import {
+  bigNumberToEther,
+  bigNumberToNumber,
+  getImageUrl,
+} from "../../utils/contract";
 
 type Props = {
-  attributes: Array<any>;
-  description: string;
-  image: string;
-  name: string;
-  price: number;
+  attributes?: Array<any>;
+  description?: string;
+  image?: string;
+  name?: string;
+  price?: BigNumber;
+  tokenId?: BigNumber;
 };
 
 export const UserNFTCard = (props: Props) => {
-  const { attributes, name, image, description, price } = props;
+  const { name, image, price, tokenId } = props;
 
   return (
-    <Link to="/sell/1">
+    <Link to={tokenId ? `/sell/${bigNumberToNumber(tokenId)}` : `/buy/1`}>
       <Stack>
         <Box
           bg={useColorModeValue("gray.200", "gray.600")}
@@ -47,7 +53,7 @@ export const UserNFTCard = (props: Props) => {
           />
           <Box p={2}>
             <Heading as="h3" size="md" my={1}>
-              {name}
+              {name ? name : `The Cool NFT`}
             </Heading>
             <Heading
               as="h6"
@@ -55,7 +61,7 @@ export const UserNFTCard = (props: Props) => {
               mb={1}
               color={useColorModeValue("gray.600", "gray.300")}
             >
-              Ghost #3267
+              {tokenId ? `METT #${bigNumberToNumber(tokenId)}` : `Ghost #3737`}
             </Heading>
             <Divider />
             <Box display="flex" alignItems="center" justifyContent="flex-end">
@@ -65,7 +71,7 @@ export const UserNFTCard = (props: Props) => {
                 my={1}
                 color={useColorModeValue("gray.600", "gray.300")}
               >
-                {`${price} Eth`}
+                {price ? `${bigNumberToEther(price)} Eth` : `$0.00`}
               </Heading>
             </Box>
           </Box>
