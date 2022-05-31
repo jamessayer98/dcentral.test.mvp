@@ -33,7 +33,7 @@ export const Navbar: React.FC = () => {
       >
         <Link to="/">
           <Text as="h2" fontSize={24} fontWeight="bold">
-            DECENTRAL
+            DCENTRAL
           </Text>
         </Link>
         <Stack direction="row" align="center" spacing={4}>
