@@ -29,7 +29,6 @@ export const Navbar: React.FC = () => {
         wrap="wrap"
         padding="1rem"
         bg={useColorModeValue("purple.300", "purple.400")}
-        color="white"
       >
         <Link to="/">
           <Text as="h2" fontSize={24} fontWeight="bold">
@@ -47,12 +46,8 @@ export const Navbar: React.FC = () => {
               Profile
             </MenuButton>
             <MenuList>
-              <Link to="my-collection">
-                <MenuItem>My Collection</MenuItem>
-              </Link>
-              <Link to="/u/profile">
-                <MenuItem>Profile</MenuItem>
-              </Link>
+              <MenuItem><Link to="my-collection">My Collection</Link></MenuItem>
+              <MenuItem><Link to="/u/profile">Profile</Link></MenuItem>
             </MenuList>
           </Menu>
         </Stack>
