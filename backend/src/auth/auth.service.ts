@@ -107,6 +107,7 @@ export class AuthService {
     try {
       const tokensPaylod = await this.oauthClient.getToken(tokenData.code);
       const userPayload = await this.handleGoogleLogin(tokensPaylod.tokens);
+
       return userPayload;
     } catch (error) {
       throw new BadRequestException('Could not login with google');
@@ -118,7 +119,6 @@ export class AuthService {
       idToken: tokenPayload.id_token,
     });
     const email = tokenInfo.getPayload().email;
-
     const user = await this.prisma.user.findFirst({
       where: {
         email,
