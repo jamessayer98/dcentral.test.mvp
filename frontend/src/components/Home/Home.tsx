@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 import { Container, Grid, GridItem } from "@chakra-ui/react";
 import { useWeb3 } from "../../context/Web3Provider";
 import { useContract } from "../../hooks/useContract";
-import { MarketItems, NFT } from "../../types/contract.types";
+import { NFT } from "../../types/contract.types";
 import { NFTCard } from "./NFTCard";
-import { bigNumberToEther, bigNumberToNumber } from "../../utils/contract";
-import { UserNFTCard } from "../User/UserNFTCard";
+import { bigNumberToNumber } from "../../utils/contract";
 import { useWalletOpts } from "../../hooks/useWalletOpts";
 
 type Props = {};
@@ -14,23 +13,16 @@ export const Home = (props: Props) => {
   const { fetchMarketItems, getNftMetadata } = useContract();
   const { web3 } = useWeb3();
   const [marketItems, setMarketItems] = useState<Array<NFT>>([]);
-  const [loading, setLoading] = useState<Boolean>(true);
   const { walletOpts } = useWalletOpts();
   const { address } = walletOpts;
 
   useEffect(() => {
-    setLoading(true);
     (async () => {
       const marketItems = await fetchMarketItems();
       if (marketItems) {
         const allMetadata = await Promise.all(
           marketItems
-            .filter(
-              (item) =>
-                item.creator !== address &&
-                item.owner !== address &&
-                item.seller !== address
-            )
+            .filter((item) => item.owner !== address)
             .map(async (item) => {
               const { price, tokenId } = item;
               const metadata = await getNftMetadata(bigNumberToNumber(tokenId));
@@ -38,12 +30,9 @@ export const Home = (props: Props) => {
             })
         );
         setMarketItems(allMetadata);
-        setLoading(false);
       }
     })();
   }, [web3]);
-
-  // if (!loading) console.log(marketItems);
 
   return (
     <Container maxWidth="800px" mt={3} py={3}>
