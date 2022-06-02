@@ -22,7 +22,7 @@ export const Home = (props: Props) => {
       if (marketItems) {
         const allMetadata = await Promise.all(
           marketItems
-            .filter((item) => item.owner !== address)
+            .filter((item) => item.owner !== address && item.seller !== address)
             .map(async (item) => {
               const { price, tokenId } = item;
               const metadata = await getNftMetadata(bigNumberToNumber(tokenId));
@@ -59,18 +59,6 @@ export const Home = (props: Props) => {
             </GridItem>
           );
         })}
-        <GridItem>
-          <NFTCard />
-        </GridItem>
-        <GridItem>
-          <NFTCard />
-        </GridItem>
-        <GridItem>
-          <NFTCard />
-        </GridItem>
-        <GridItem>
-          <NFTCard />
-        </GridItem>
       </Grid>
     </Container>
   );
