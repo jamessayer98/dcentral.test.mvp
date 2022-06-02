@@ -28,7 +28,6 @@ export const UserNFTCollection = (props: Props) => {
   useEffect(() => {
     (async () => {
       const allMyNfts = await fetchMarketItems();
-      console.log(allMyNfts);
       if (allMyNfts) {
         const allMetadata = await Promise.all(
           allMyNfts

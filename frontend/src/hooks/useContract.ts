@@ -126,7 +126,14 @@ export const useContract = () => {
   const fetchAllMyNfts = async () => {
     if (!isWalletConnected()) return;
 
-    const allNfts: MarketItems = await nonSignerContract.fetchAllOfMyNfts();
+    const allMyNfts: MarketItems = await nonSignerContract.fetchAllOfMyNfts();
+    return allMyNfts;
+  };
+
+  const fetchAllNfts = async () => {
+    if (!isWalletConnected()) return;
+
+    const allNfts: MarketItems = await nonSignerContract.fetchAllItems();
     return allNfts;
   };
 
@@ -192,5 +199,6 @@ export const useContract = () => {
     fetchItemsListed,
     fetchMarketItems,
     idToMarketItem,
+    fetchAllNfts,
   };
 };

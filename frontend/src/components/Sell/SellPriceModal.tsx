@@ -14,20 +14,17 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
+  Stack,
   useDisclosure,
 } from "@chakra-ui/react";
-import { BigNumber } from "ethers";
 import { Controller, useForm } from "react-hook-form";
-import { useContract } from "../../hooks/useContract";
 
 type Props = {
-  tokenId?: BigNumber;
-  price?: BigNumber;
-  sold?: boolean;
+  handleNftSale: (price: number) => Promise<void>;
 };
 
 export const SellPriceModal = (props: Props) => {
-  const { sold, tokenId, price } = props;
+  const { handleNftSale } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     handleSubmit,
@@ -35,28 +32,13 @@ export const SellPriceModal = (props: Props) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      price: "",
+      price: 0.003,
     },
   });
 
-  const { resellNft } = useContract();
-
-  const onSubmit = (values) => {
-    console.log(values);
-  };
-
-  const handleSell = async () => {
-    if (!sold) {
-      // NFT is being put to market for the first time
-      // use createMarketItem
-    } else {
-      // NFT is being resold
-      // use resellNft
-      if (tokenId) {
-        const receipt = await resellNft(tokenId, 0.004);
-        console.log(receipt);
-      }
-    }
+  const onSubmit = async (values) => {
+    const { price } = values;
+    await handleNftSale(Number(price));
   };
 
   return (
@@ -84,12 +66,12 @@ export const SellPriceModal = (props: Props) => {
                 render={({ field }) => (
                   <FormControl isInvalid={!!errors.price}>
                     <NumberInput
-                      onChange={(e: any) => field.onChange(e.target.checked)}
-                      min={1}
+                      onChange={(val) => field.onChange(val)}
+                      min={0.0004}
                       placeholder="Price"
-                      defaultValue={1}
-                      precision={2}
-                      step={1}
+                      defaultValue={0.003}
+                      precision={4}
+                      step={0.0001}
                     >
                       <NumberInputField />
                       <NumberInputStepper>
@@ -103,11 +85,16 @@ export const SellPriceModal = (props: Props) => {
                   </FormControl>
                 )}
               />
+              <ModalFooter>
+                <Stack spacing={4} direction="row">
+                  <Button type="submit" colorScheme="purple">
+                    Sell
+                  </Button>
+                  <Button onClick={onClose}>Close</Button>
+                </Stack>
+              </ModalFooter>
             </form>
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={handleSell}>Done</Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

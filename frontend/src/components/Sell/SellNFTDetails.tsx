@@ -1,5 +1,5 @@
 import { Box, Container, Heading, Image, Stack, Text } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useWeb3 } from "../../context/Web3Provider";
 import { useContract } from "../../hooks/useContract";
@@ -11,7 +11,7 @@ type Props = {};
 
 export const SellNFTDetails = (props: Props) => {
   const { id } = useParams();
-  const { idToMarketItem, getNftMetadata } = useContract();
+  const { idToMarketItem, getNftMetadata, resellNft } = useContract();
   const { web3 } = useWeb3();
   const [currentNft, setCurrentNft] = useState<NFT>({});
 
@@ -25,7 +25,23 @@ export const SellNFTDetails = (props: Props) => {
     })();
   }, [web3, id]);
 
-  const { name, description, image, tokenId, price, sold } = currentNft;
+  const handleNFTSale = useCallback(
+    async (price) => {
+      if (!sold) {
+        // NFT is being put to market for the first time
+        // use createMarketItem
+      } else {
+        // NFT is being resold
+        // use resellNft
+        if (tokenId) {
+          const receipt = await resellNft(tokenId, price);
+        }
+      }
+    },
+    [currentNft]
+  );
+
+  const { description, image, tokenId, sold } = currentNft;
 
   return (
     <Container maxWidth="1000px" mt={3} py={3}>
@@ -58,7 +74,7 @@ export const SellNFTDetails = (props: Props) => {
             <Heading color="purple.400">
               {tokenId ? `METT #${bigNumberToNumber(tokenId)}` : `Ghost #2163`}
             </Heading>
-            <SellPriceModal sold={sold} tokenId={tokenId} price={price} />
+            <SellPriceModal handleNftSale={handleNFTSale} />
           </Box>
           <Box
             borderRadius={10}
