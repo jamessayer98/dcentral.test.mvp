@@ -22,6 +22,15 @@ export const NFTDetails = (props: Props) => {
   const { idToMarketItem, getNftMetadata } = useContract();
   const { web3 } = useWeb3();
   const [currentNft, setCurrentNft] = useState<NFT>({});
+  const { createMarketSale } = useContract();
+  const { name, description, image, tokenId, price } = currentNft;
+
+  const handleBuy = async () => {
+    if (web3 && tokenId && price) {
+      const marketSale = await createMarketSale(tokenId, price);
+      console.log(marketSale);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -32,8 +41,6 @@ export const NFTDetails = (props: Props) => {
       }
     })();
   }, [web3, id]);
-
-  const { name, description, image, tokenId, price } = currentNft;
 
   return (
     <Container maxWidth="1000px" mt={3} py={3}>
@@ -48,9 +55,8 @@ export const NFTDetails = (props: Props) => {
             borderRadius={10}
             objectFit="contain"
             src={
-              image
-                ? getImageUrl(image)
-                : "https://lh3.googleusercontent.com/tdWPH_UcLdIFqSLK7MapK5cHR_G9IBuMCIf7Is-AW_etOiaPOmjkKrwShgTfXc-isCvfv7Vi5XXMIIJiO_zWf6_I5qJq0RCRKTxs=w600"
+              getImageUrl(image || "")
+              // || "https://lh3.googleusercontent.com/tdWPH_UcLdIFqSLK7MapK5cHR_G9IBuMCIf7Is-AW_etOiaPOmjkKrwShgTfXc-isCvfv7Vi5XXMIIJiO_zWf6_I5qJq0RCRKTxs=w600"
             }
             alt="Cool NFT"
             fallbackSrc="https://via.placeholder.com/300"
@@ -69,7 +75,13 @@ export const NFTDetails = (props: Props) => {
                 ? `METT #${bigNumberToNumber(tokenId)} ${name}`
                 : `Ghost #2163`}
             </Heading>
-            <Button my={4} w="100%" bgColor="purple.400" colorScheme="purple">
+            <Button
+              my={4}
+              w="100%"
+              bgColor="purple.400"
+              colorScheme="purple"
+              onClick={handleBuy}
+            >
               Buy
             </Button>
           </Box>

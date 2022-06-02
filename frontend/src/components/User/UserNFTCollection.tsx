@@ -9,9 +9,9 @@ import {
 } from "@chakra-ui/react";
 import { useWeb3 } from "../../context/Web3Provider";
 import { useContract } from "../../hooks/useContract";
-import { NFTMetadata, NFT } from "../../types/contract.types";
+import { NFT } from "../../types/contract.types";
 import { UserNFTCard } from "./UserNFTCard";
-import { bigNumberToEther, bigNumberToNumber } from "../../utils/contract";
+import { bigNumberToNumber } from "../../utils/contract";
 import { useWalletOpts } from "../../hooks/useWalletOpts";
 
 type Props = {};
@@ -20,25 +20,19 @@ export const UserNFTCollection = (props: Props) => {
   const { web3 } = useWeb3();
   const [nftCollection, setnftCollection] = useState<Array<NFT>>([]);
   const [tokenURI, setTokenURI] = useState("");
-  const [loading, setLoading] = useState<Boolean>(true);
   const { walletOpts } = useWalletOpts();
   const { address } = walletOpts;
 
-  const { fetchAllMyNfts, getNftMetadata, mintNft } = useContract();
+  const { getNftMetadata, mintNft, fetchMarketItems } = useContract();
 
   useEffect(() => {
-    setLoading(true);
     (async () => {
-      const allMyNfts = await fetchAllMyNfts();
+      const allMyNfts = await fetchMarketItems();
+      console.log(allMyNfts);
       if (allMyNfts) {
         const allMetadata = await Promise.all(
           allMyNfts
-            .filter(
-              (item) =>
-                item.creator === address ||
-                item.owner === address ||
-                item.seller === address
-            )
+            .filter((item) => item.owner === address || item.seller === address)
             .map(async (item) => {
               const { price, tokenId } = item;
               const metadata = await getNftMetadata(bigNumberToNumber(tokenId));
@@ -46,7 +40,6 @@ export const UserNFTCollection = (props: Props) => {
             })
         );
         setnftCollection(allMetadata);
-        setLoading(false);
       }
     })();
   }, [web3]);
@@ -62,7 +55,6 @@ export const UserNFTCollection = (props: Props) => {
     }
     const marketItem = await mintNft(tokenURI);
     if (!marketItem) alert("Only owner can mint new tokens!");
-    console.log(marketItem);
   };
 
   return (
@@ -94,7 +86,8 @@ export const UserNFTCollection = (props: Props) => {
         gap={6}
       >
         {nftCollection.map((item, index) => {
-          const { name, description, image, attributes, price, tokenId } = item;
+          const { name, description, image, attributes, price, tokenId, sold } =
+            item;
           return (
             <GridItem key={`${index}`}>
               <UserNFTCard
@@ -104,6 +97,7 @@ export const UserNFTCollection = (props: Props) => {
                 attributes={attributes}
                 price={price}
                 tokenId={tokenId}
+                sold={sold}
               />
             </GridItem>
           );

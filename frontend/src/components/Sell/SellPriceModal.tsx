@@ -16,11 +16,18 @@ import {
   NumberInputStepper,
   useDisclosure,
 } from "@chakra-ui/react";
+import { BigNumber } from "ethers";
 import { Controller, useForm } from "react-hook-form";
+import { useContract } from "../../hooks/useContract";
 
-type Props = {};
+type Props = {
+  tokenId?: BigNumber;
+  price?: BigNumber;
+  sold?: boolean;
+};
 
 export const SellPriceModal = (props: Props) => {
+  const { sold, tokenId, price } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     handleSubmit,
@@ -32,8 +39,24 @@ export const SellPriceModal = (props: Props) => {
     },
   });
 
+  const { resellNft } = useContract();
+
   const onSubmit = (values) => {
     console.log(values);
+  };
+
+  const handleSell = async () => {
+    if (!sold) {
+      // NFT is being put to market for the first time
+      // use createMarketItem
+    } else {
+      // NFT is being resold
+      // use resellNft
+      if (tokenId) {
+        const receipt = await resellNft(tokenId, 0.004);
+        console.log(receipt);
+      }
+    }
   };
 
   return (

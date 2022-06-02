@@ -21,10 +21,11 @@ type Props = {
   name?: string;
   price?: BigNumber;
   tokenId?: BigNumber;
+  sold?: boolean;
 };
 
 export const UserNFTCard = (props: Props) => {
-  const { name, image, price, tokenId } = props;
+  const { name, image, price, tokenId, sold } = props;
 
   return (
     <Link to={tokenId ? `/sell/${bigNumberToNumber(tokenId)}` : `/buy/1`}>
@@ -45,8 +46,8 @@ export const UserNFTCard = (props: Props) => {
             borderRadius={10}
             objectFit="contain"
             src={
-              getImageUrl(image || "") ||
-              "https://lh3.googleusercontent.com/cMNCGsTG0Li4wC2dBC3jZevN4be9aXM1lNQ9JG334IDaMgJNQXAJXfvr0pFrvvkIeESSBYPwMr5QGl0SGofj7jf4r8UTqsSMsjkw=w600"
+              getImageUrl(image || "")
+              // "https://lh3.googleusercontent.com/cMNCGsTG0Li4wC2dBC3jZevN4be9aXM1lNQ9JG334IDaMgJNQXAJXfvr0pFrvvkIeESSBYPwMr5QGl0SGofj7jf4r8UTqsSMsjkw=w600"
             }
             alt="Cool NFT"
             fallbackSrc="https://via.placeholder.com/300"

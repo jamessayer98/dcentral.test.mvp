@@ -25,7 +25,7 @@ export const SellNFTDetails = (props: Props) => {
     })();
   }, [web3, id]);
 
-  const { name, description, image, tokenId, price } = currentNft;
+  const { name, description, image, tokenId, price, sold } = currentNft;
 
   return (
     <Container maxWidth="1000px" mt={3} py={3}>
@@ -40,9 +40,8 @@ export const SellNFTDetails = (props: Props) => {
             borderRadius={10}
             objectFit="contain"
             src={
-              image
-                ? getImageUrl(image)
-                : "https://lh3.googleusercontent.com/ViaGqCKMMptuIR9_KaEeevN42T7CdjOXBlvkKH5N8PoO8isRhBVbDLSH8c9bAb4AaTMfNbbbeiwTbgPcx0Z9INDsSPbrJZYJN6jezg=w600"
+              getImageUrl(image || "")
+              // "https://lh3.googleusercontent.com/ViaGqCKMMptuIR9_KaEeevN42T7CdjOXBlvkKH5N8PoO8isRhBVbDLSH8c9bAb4AaTMfNbbbeiwTbgPcx0Z9INDsSPbrJZYJN6jezg=w600"
             }
             alt="Cool NFT"
             fallbackSrc="https://via.placeholder.com/300"
@@ -59,7 +58,7 @@ export const SellNFTDetails = (props: Props) => {
             <Heading color="purple.400">
               {tokenId ? `METT #${bigNumberToNumber(tokenId)}` : `Ghost #2163`}
             </Heading>
-            <SellPriceModal />
+            <SellPriceModal sold={sold} tokenId={tokenId} price={price} />
           </Box>
           <Box
             borderRadius={10}
