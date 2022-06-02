@@ -106,7 +106,7 @@ export const SellPriceModal = (props: Props) => {
             </form>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={onClose}>Done</Button>
+            <Button onClick={handleSell}>Done</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
